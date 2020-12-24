@@ -12,10 +12,29 @@ const app = Vue.createApp({
 
             details: ['50% cotton', '30% wool', '20% polyester'],
             variants: [
-                {id: 2234, color:'green'},
-                {id: 2235, color:'blue'},
+                {id: 2234, color:'green', image:'./assets/images/socks_green.jpg'},
+                {id: 2235, color:'blue', image:'./assets/images/socks_blue.jpg'},
             ],
             sizes: ['S', 'M', 'L', 'XL'],
+            cart:0,
+        }
+    },
+    methods:{
+        addToCart(){
+            this.cart += 1;
+            console.log(this.cart);
+        },
+        updateImage(variantImage){
+            this.image2 = variantImage;
+        },
+        decreaseToCart(){
+            if(this.cart > 0){
+                this.cart -= 1;
+            }else{
+                this.cart = 0;
+            }
+            
+            console.log(this.cart);
         }
     }
 })
