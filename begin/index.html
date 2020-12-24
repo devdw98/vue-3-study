@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Vue Mastery</title>
+    <!-- Import Styles -->
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <!-- Import Vue.js -->
+    <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <!-- mount 된 곳에 등록된 데이터 가져옴 -->
+      <h1>{{ product }}</h1>
+      <p>{{ description }}</p>
+    </div>
+
+    <!-- Import Js -->
+    <script src="./main.js"></script>
+    <!-- Mount App -->
+    <!-- div id가 'app' 인 곳에 mount(연결) -->
+    <script>
+      const mountedApp =  app.mount('#app')
+    </script>
+  </body>
+</html>
