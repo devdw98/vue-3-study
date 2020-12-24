@@ -23,6 +23,17 @@
           <div class="product-info">
             <h1>{{ product }}</h1>
             <a :href="myUrl"> go ncsoft </a>
+            <!-- 
+              inStock 의 데이터(true/false에 따라 결과 달라짐)
+              v-else 꼭 쓸 필요 x
+            -->
+            <p v-if="inventory > 10">In Stock</p>
+            <p v-else-if="inventory <= 10 && inventory > 0">Almost sold out!</p>
+            <p v-else>Out of Stock</p>
+            <!-- v-show 가 false 면 hidden 처리 -->
+            <p v-show="inStock2"> In Stock2 </p>
+
+            <p v-if="onSale">On Sales</p>
           </div>
         </div>
       </div>
