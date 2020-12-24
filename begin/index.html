@@ -11,60 +11,46 @@
   <body>
     <div id="app">
       <div class="nav-bar"></div>
+
+      <div class="cart">Cart({{ cart }})</div>
+      
       <div class="product-display">
         <div class="product-container">
           <div class="product-image">
-            <!-- image goes here-->
-            <!-- v-bind : Dynamically bind an attribute(src) to an expression(image) -->
-            <!-- v-bind 로 main.js 의 image 를 가져옴 -->
-            <img :class="{ 'out-of-stock-img':!inStock }" v-bind:src="image2">
-            <!-- <img :src="image2"> 로도 사용 가능 (HTML에서 많이 사용) -->
+            <img v-bind:src="image">
           </div>
           <div class="product-info">
-            <h1>{{ product }}</h1>
-            <a :href="myUrl"> go ncsoft </a>
-            <!-- 
-              inStock 의 데이터(true/false에 따라 결과 달라짐)
-              v-else 꼭 쓸 필요 x
-            -->
-            <p v-if="inventory > 10">In Stock</p>
-            <p v-else-if="inventory <= 10 && inventory > 0">Almost sold out!</p>
+            <h1>{{ title }}</h1>
+            <!-- solution -->
+            <p>{{ sale }}</p>
+            <!-- solution -->
+            <p v-if="inStock">In Stock</p>
             <p v-else>Out of Stock</p>
-            <!-- v-show 가 false 면 hidden 처리 -->
-            <p v-show="inStock2"> In Stock2 </p>
-
-            <p v-if="onSale">On Sales</p>
-
             <ul>
-              <li v-for="detail in details">{{detail}}</li>
+              <li v-for="detail in details">{{ detail }}</li>
             </ul>
-            <div v-for="variant in variants"
-            :key="variant.id"
-             @mouseover="updateImage(variant.image)"
-             class="color-circle"
-             :style="{backgroundColor: variant.color}">
-             <!-- {{variant.color}} -->
+
+            <div 
+              v-for="(variant, index) in variants" 
+              :key="variant.id" 
+              @mouseover="updateVariant(index)" 
+              class="color-circle" 
+              :style="{ backgroundColor: variant.color }">
             </div>
-            <ul>
-              <li v-for="(size, index) in sizes" :key="index">{{ size }}</li>
-            </ul>
+            
             <button class="button" 
-            :class="{disabledButton :!inStock2}"
-            :disabled="!inStock2"
-            @click="addToCart()">
-            Add to Cart</button>
-            <button class="button" @click="decreaseToCart()">Decrease to Cart</button>
+            :class="{ disabledButton: !inStock2 }" :disabled="!inStock" v-on:click="addToCart">Add to Cart</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Import Js -->
+    <!-- Import App -->
     <script src="./main.js"></script>
+
     <!-- Mount App -->
-    <!-- div id가 'app' 인 곳에 mount(연결) -->
     <script>
-      const mountedApp =  app.mount('#app')
+      const mountedApp = app.mount('#app')
     </script>
   </body>
 </html>
