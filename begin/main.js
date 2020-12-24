@@ -7,7 +7,7 @@ const app = Vue.createApp({
             image2:'./assets/images/socks_blue.jpg',
             myUrl:"https://kr.ncsoft.com/kr/index.do",
             inventory:0,
-            inStock2: true,
+            inStock2: false,
             onSale: true,
 
             details: ['50% cotton', '30% wool', '20% polyester'],

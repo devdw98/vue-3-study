@@ -17,7 +17,7 @@
             <!-- image goes here-->
             <!-- v-bind : Dynamically bind an attribute(src) to an expression(image) -->
             <!-- v-bind 로 main.js 의 image 를 가져옴 -->
-            <img v-bind:src="image2">
+            <img :class="{ 'out-of-stock-img':!inStock }" v-bind:src="image2">
             <!-- <img :src="image2"> 로도 사용 가능 (HTML에서 많이 사용) -->
           </div>
           <div class="product-info">
@@ -38,11 +38,21 @@
             <ul>
               <li v-for="detail in details">{{detail}}</li>
             </ul>
-            <div v-for="variant in variants" :key="variant.id" @mouseover="updateImage(variant.image)">{{variant.color}}</div>
+            <div v-for="variant in variants"
+            :key="variant.id"
+             @mouseover="updateImage(variant.image)"
+             class="color-circle"
+             :style="{backgroundColor: variant.color}">
+             <!-- {{variant.color}} -->
+            </div>
             <ul>
               <li v-for="(size, index) in sizes" :key="index">{{ size }}</li>
             </ul>
-            <button class="button" v-on:click="addToCart()">Add to Cart</button>
+            <button class="button" 
+            :class="{disabledButton :!inStock2}"
+            :disabled="!inStock2"
+            @click="addToCart()">
+            Add to Cart</button>
             <button class="button" @click="decreaseToCart()">Decrease to Cart</button>
           </div>
         </div>
