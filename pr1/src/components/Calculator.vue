@@ -35,23 +35,17 @@ export default defineComponent({
         return {
             status: false, //결과 저장: true, 저장 안함: false
             numCount: 0,
-            symCount:0,
             objCount:0,
             resCount:0,
             preSym:'',
             curSym:'',
             memSym:'',
             numList: [] as number[],
-            symList:[] as string[],
             resList:[] as number[],
             objList:[] as any[],
-            num1: 0,
             num: 0, //inputNum
-            tmp: 0,
             memoryNum: 0,
-            resNum: 0,
-            mode: '',
-            
+            resNum: 0, 
         }
     },
     methods: {
@@ -60,20 +54,12 @@ export default defineComponent({
         },
         
         setSymbol: function(data: string){
-            // if(this.resNum === 0){
-            //     this.resNum = this.num;
-            // }
-            // if(data.localeCompare('=') === 0){
-            //     this.symList[this.symCount] = data;   
-            // }else{
-            //     this.symList[this.symCount++] = data; 
-            // }
             if(this.num === 0){ 
                 //숫자가 0이면 저장 안함
             }else{
                 this.numList[this.numCount++] = this.num;
                 this.objList[this.objCount++] = this.num;
-                this.num = 0;//-1;
+                this.num = 0;
                 
             }
             
@@ -82,9 +68,6 @@ export default defineComponent({
                     this.preSym = this.curSym;
                     this.curSym = '';
                 }
-                
-                // this.num = this.numList[this.numCount-1];
-            //    this.resNum = this.resList[this.resCount-1];
                this.status = true;
             }
             else{
@@ -92,11 +75,7 @@ export default defineComponent({
                 this.curSym = data;
             }
             this.objList[this.objCount++] = data;
-        //    console.log("resNum: "+this.resNum);
             console.log("pre: "+this.preSym+" cur: "+this.curSym);
-            // this.objList[this.objCount] = this.num;
-            // this.num = 0;
-            // this.objCount++; 
         },
 
         runMode: function(mode: string){
@@ -127,34 +106,22 @@ export default defineComponent({
         memoryMode: function(mode: string){
             switch(mode){
                 case 'MC':
-                    console.log("MC");
                     this.memSym = "MC";
-                    // this.memoryNum = 0;
-                    // this.resNum = 0;
                     break;
                 case 'MR':
-                    console.log("MR");
                     this.memSym = "MR";
-                    // this.resNum = this.memoryNum;
                     break;
                 case 'M+':
-                //    console.log("M+");
                     this.memSym = 'M+';
-                    // console.log(this.memSym);
-                    // this.memoryNum += this.resNum; //계산 후 저장되는 곳
                     break;
                 case 'M-':
-                //    console.log("M-");
                     this.memSym = 'M-';
-                    // console.log(this.memSym);
-                //    this.memoryNum -= this.resNum; //계산 후 저장되는 곳
                     break;
             }
                 
         }
-
-
     },
+
     computed: {
         calculate(): number {
             let resultNum : number = 0;//= this.resNum;// this.resList[this.resCount];
@@ -168,23 +135,18 @@ export default defineComponent({
             }
             console.log("resNum: "+resultNum);
             console.log("curNum: "+curNum);
-            // if(this.numCount > 1){
                 switch(this.preSym){
                 case '+':
                     resultNum += this.numList[this.numCount-1];
-                //    console.log(this.numList[this.numCount-2]+" "+this.numList[this.numCount-1]+" "+resultNum);
                     break;
                 case '-':
                     resultNum -= this.numList[this.numCount-1];
-                    // resultNum = this.numList[this.numCount-2]- this.numList[this.numCount-1];
                     break;
                 case '*':
                     resultNum *= this.numList[this.numCount-1];
-                    // resultNum = this.numList[this.numCount-2]* this.numList[this.numCount-1];
                     break;
                 case '/':
                     resultNum /= this.numList[this.numCount-1];
-                    // resultNum = this.numList[this.numCount-2]/ this.numList[this.numCount-1];
                     break;
                 }
                 console.log("result: "+resultNum);
@@ -196,38 +158,9 @@ export default defineComponent({
                     this.resNum = 0;
                     this.status = false;
                 }
-                // //    this.resNum = resultNum;
-                // //    this.num = this.numList[this.numCount-1];
-                //     // if(this.num === 0){
-                //     //     // this.resNum = this.resList[resultNum-1];
-                //     //     // this.num = this.numList[this.numCount-1];
-                //     //     console.log("num=0");
-                //     //     console.log("resCount: "+this.resCount);
-                //     //     // console.log("resNum:"+this.resList[resultNum-2]);
-                //     //     // console.log("num: "+this.numList[this.numCount-1]);
-                    // }
-                //  //   this.preSym = this.curSym;
-
-                //     this.resList[this.resCount++] = this.resNum;
-                //     this.resNum = 0;
-                //     // this.preSym = '';
-                //     // this.curSym = '';
-                //     this.status = false;
-                // }
             return resultNum;
         },
         memoryCompute: function( ) :number {
-        //     // console.log("compute "+this.memSym);
-        //     // console.log("resCount data: "+this.resList[this.resCount]);
-        //     let temp: number = 0;
-        //     if(this.resCount === 0){
-        //         temp = this.resList[0];
-        //     }
-        //     else if(this.num === 0){
-        //         temp = this.resList[this.resCount-1];
-        //     }else{
-        //         temp = this.num;
-        //     }
             let temp;
             if(this.num === 0){
                 temp = this.resList[this.resCount-1];//this.resNum;
@@ -238,7 +171,6 @@ export default defineComponent({
             switch(this.memSym){
                 case 'M+':
                     console.log("1."+this.memSym);
-        //             // console.log(this.resList[this.resCount-1]);
                     this.memoryNum += temp; //계산 후 저장되는 곳
                     console.log(this.memoryNum);
                     this.num = 0;
@@ -255,10 +187,6 @@ export default defineComponent({
                     this.resNum = this.memoryNum;
                     break;
             }
-        // //     this.resNum = 0;
-            // this.num = 0;
-        //     // this.preSym = '';
-            // this.curSym = '';
             this.memSym = '';
             return this.memoryNum;
         }
