@@ -34,11 +34,6 @@ router.post('/login', async (req: Request, res: Response) => {
                         if (req.session._user === undefined) {
                             req.session._user = userInfo;
                             req.session.isLogined = true;
-                            // console.log(req.session._user);
-                            // localStorage.setItem('name', req.session._user.username);
-                            // res.setHeader('Set-Cookie', req.session._user.username);
-                            // res.setHeader('name', req.session._user.username);
-                            // res.setHeader('name', req.session._user.username);
                             res.json({ message: "Login success", name: req.session._user.username});
                         }
                         return res;

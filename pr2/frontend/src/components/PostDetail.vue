@@ -1,14 +1,14 @@
 <template>
     <div class="post-detail" >
         <h1>Post Details</h1>
-        <div>{{title}}</div>
-        <div>{{content}}</div>
-        <div>{{writer}}</div>
+        <div>title : {{title}}</div>
+        <div>content : {{content}}</div>
+        <div>writer : {{writer}}</div>
         <p v-if="isWriter">
             <button @click=modifyPost>modify</button>
             <button @click=deletePost>delete</button>
         </p>
-        <button @click=showList>show</button>
+        <button @click=showList>back</button>
     </div>
 </template>
 

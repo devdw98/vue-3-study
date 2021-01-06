@@ -11,7 +11,7 @@ router.post('/', async (req: Request, res: Response) => {
         const memo: IPost = {
             title: req.body.title,
             content: req.body.content,
-            _writer: req.body.writer,//req.session._user?.username,
+            _writer: req.body.writer,
             createdAt: new Date,
             updatedAt: new Date
         };
