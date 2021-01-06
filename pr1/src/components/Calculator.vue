@@ -1,21 +1,18 @@
 <template>
-    <number @number-initialize=setNum2></number>
-    <symbols @symbol-initialize=setSymbol></symbols>
-    <modes @modes-initialize=runMode></modes>
-    <memory @memory-initialize=memoryMode></memory>
+<div class="main">
+    <h1>Calculator</h1>
+    <number @number-initialize="setNum"></number>
+    <button type="button" @click="setFloat">.</button>
+    <symbols @symbol-initialize="setSymbol"></symbols>
+    <modes @modes-initialize="setMode"></modes>
+    <memory @memory-initialize="setMode"></memory>
+    <h3>{{ objStr }}</h3>
+    <!-- <h5 v-for="(obj, id) in objList" :key="id">{{obj}} </h5> -->
 
-    <div class="main">
-        <h2>{{objList}}</h2>
-        <h2> {{num}}</h2>
-        
-        <h2>nums: {{numList}}</h2>
-        <!-- <h2>symbols: {{symList}}</h2> -->
-        <h2>resultList (for GT): {{resList}}</h2>
-        <!-- <h2>objList: </h2> -->
-        <h1>{{calculate}}</h1>
-        <h1>memoryNum: {{memoryCompute}}</h1>
-    </div>
+    <h1>{{resNum}}</h1>
+</div>
 </template>
+
 <script lang="ts">
 import {defineComponent} from 'vue';
 import Number from './Number.vue';
@@ -23,174 +20,133 @@ import Symbols from './Symbols.vue';
 import Modes from './Mode.vue';
 import Memory from './Memory.vue';
 
+type Operator = '+' | '-' | '*' | '/';
+type Mode = 'C' | 'AC' | 'GT' | 'MC' | 'MR' | 'M+' | 'M-';
+
+const calculateFunc: Record<Operator, (num1: number, num2: number)=> number> = {
+    '+': (num1, num2) => num1 + num2,
+    '-': (num1, num2) => num1 - num2,
+    '*': (num1, num2) => num1 * num2,
+    '/': (num1, num2) => num1 / num2
+};
+
 export default defineComponent({
     name: 'Calculator',
     components: {
         Number,
         Symbols,
         Modes,
-        Memory,
+        Memory
     },
-    data() {
+
+    data(){
         return {
-            status: false, //결과 저장: true, 저장 안함: false
-            numCount: 0,
-            objCount:0,
-            resCount:0,
-            preSym:'',
-            curSym:'',
-            memSym:'',
+            isDot: false,
+            decimalCnt: 0,
+            num: 0,
+            resNum: 0,
+            memNum: 0,
+            preSym:'' as Operator,
             numList: [] as number[],
-            resList:[] as number[],
-            objList:[] as any[],
-            num: 0, //inputNum
-            memoryNum: 0,
-            resNum: 0, 
+            resList: [] as number[],
+            objList: [] as any[],
+            objStr: '' as string
         }
     },
+    
     methods: {
-        setNum2: function(inum: number){
-            this.num = this.num*10+inum;
+        setNum(inputNum: number){
+            if(this.isDot){
+                this.decimalCnt++;
+                let i = 0;
+                while(i < this.decimalCnt){
+                    inputNum /= 10;
+                    i++;
+                }
+                this.num = this.num + inputNum
+            } else{
+                this.num = this.num * 10 + inputNum;
+            }
         },
         
-        setSymbol: function(data: string){
-            if(this.num === 0){ 
-                //숫자가 0이면 저장 안함
-            }else{
-                this.numList[this.numCount++] = this.num;
-                this.objList[this.objCount++] = this.num;
-                this.num = 0;
-                
-            }
-            
-            if(data.localeCompare('=') === 0){
-                if(this.curSym.localeCompare('') != 0){
-                    this.preSym = this.curSym;
-                    this.curSym = '';
-                }
-               this.status = true;
-            }
-            else{
-                this.preSym = this.curSym;
-                this.curSym = data;
-            }
-            this.objList[this.objCount++] = data;
-            console.log("pre: "+this.preSym+" cur: "+this.curSym);
+        setFloat(){
+            this.isDot = true;
         },
 
-        runMode: function(mode: string){
+        setSymbol(symbol: Operator){
+            if(this.num != 0){
+                this.numList.push(this.num);
+                this.objStr = this.objStr.concat(' ', this.num.toString());
+                this.num = 0;
+                this.isDot = false;
+            }
+            const len = this.numList.length;
+            if(symbol.localeCompare('=')){ //=이 아니면
+                this.objStr = this.objStr.concat(' ', symbol);
+                this.resNum = this.resNum != 0? calculateFunc[this.preSym](this.resNum, this.numList[len-1]) : this.numList[len-1];
+                this.preSym = symbol;
+            }else{
+                this.objStr = this.objStr.concat(' ',this.preSym);
+                this.objStr = this.objStr.concat(' ',)
+                this.resNum = this.resNum != 0? calculateFunc[this.preSym](this.resNum, this.numList[len-1]) : this.numList[len-1];
+                this.resList.push(this.resNum);
+            }
+        },
+        setMode(mode: Mode){
             switch(mode){
-                case 'C':   
-                    this.num = 0;
-                    
+                case 'C':
+                    this.modeC();
                     break;
                 case 'AC':
-                    this.numList = [];
-                    this.numCount = 0;
-                    this.resList = [];
-                    this.resCount = 0;
-                    this.num = 0;
-                    this.resNum = 0;
+                    this.modeAC();
                     break;
                 case 'GT':
-                    let value: number = 0;
-                    for(const r of this.resList){
-                        value += r;
-                    }
-                    console.log("value:"+value);
-                    this.resNum = value;
-                    this.preSym = '';
+                    this.modeGT();
+                    break;
+                case 'MC':
+                    this.modeMC();
+                    break;
+                case 'MR':
+                    this.modeMR();
+                    break;
+                case 'M+':  
+                    this.modeMP(this.num != 0? this.num : this.resNum);
+                    break;
+                case 'M-':
+                    this.modeMM(this.num != 0? this.num : this.resNum);
                     break;
             }
         },
-        memoryMode: function(mode: string){
-            switch(mode){
-                case 'MC':
-                    this.memSym = "MC";
-                    break;
-                case 'MR':
-                    this.memSym = "MR";
-                    break;
-                case 'M+':
-                    this.memSym = 'M+';
-                    break;
-                case 'M-':
-                    this.memSym = 'M-';
-                    break;
+
+        modeC(){
+            this.num = 0;
+            this.resNum = 0;
+            this.isDot = false;
+            this.objStr = '';
+        },
+        modeAC(){
+            this.numList = [];
+            this.resList = [];
+            this.modeC();
+        },
+        modeGT(){
+            this.resNum = 0;
+            for(let n of this.resList){
+                this.resNum += n;
             }
-                
+        },
+        modeMC(){
+            this.memNum = 0;
+        },
+        modeMR(){
+            this.resNum = this.memNum;
+        },
+        modeMP(curNum: number){
+            this.memNum += curNum;
+        },
+        modeMM(curNum: number){
+            this.memNum -= curNum;
         }
     },
-
-    computed: {
-        calculate(): number {
-            let resultNum : number = 0;//= this.resNum;// this.resList[this.resCount];
-            let curNum;
-            if(this.numCount === 0){
-                curNum = this.num;
-                resultNum = this.num;
-            }else{
-                curNum = this.numList[this.numCount-1];
-                resultNum = this.resNum;
-            }
-            console.log("resNum: "+resultNum);
-            console.log("curNum: "+curNum);
-                switch(this.preSym){
-                case '+':
-                    resultNum += this.numList[this.numCount-1];
-                    break;
-                case '-':
-                    resultNum -= this.numList[this.numCount-1];
-                    break;
-                case '*':
-                    resultNum *= this.numList[this.numCount-1];
-                    break;
-                case '/':
-                    resultNum /= this.numList[this.numCount-1];
-                    break;
-                }
-                console.log("result: "+resultNum);
-                this.resNum = resultNum;
-                
-                if(this.status == true){ // = 입력
-                    this.resList[this.resCount++] = resultNum;
-                    console.log("resCount: "+this.resCount);
-                    this.resNum = 0;
-                    this.status = false;
-                }
-            return resultNum;
-        },
-        memoryCompute: function( ) :number {
-            let temp;
-            if(this.num === 0){
-                temp = this.resList[this.resCount-1];//this.resNum;
-            }else{
-                temp = this.num;
-            }
-            console.log("temp: "+temp);
-            switch(this.memSym){
-                case 'M+':
-                    console.log("1."+this.memSym);
-                    this.memoryNum += temp; //계산 후 저장되는 곳
-                    console.log(this.memoryNum);
-                    this.num = 0;
-                    break;
-                case 'M-':
-                    console.log("2."+this.memSym);
-                    this.memoryNum -= temp; //계산 후 저장되는 곳
-                    this.num = 0;
-                    break;
-                case 'MC':
-                    this.memoryNum = 0;
-                    break;
-                case 'MR':
-                    this.resNum = this.memoryNum;
-                    break;
-            }
-            this.memSym = '';
-            return this.memoryNum;
-        }
-    }
-
 })
 </script>
