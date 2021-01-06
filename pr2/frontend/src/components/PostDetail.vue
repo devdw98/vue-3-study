@@ -1,7 +1,6 @@
 <template>
     <div class="post-detail" >
-        <h2>Post Details</h2>
-        <!-- <h1>{{id}}</h1> -->
+        <h1>Post Details</h1>
         <div>{{title}}</div>
         <div>{{content}}</div>
         <div>{{writer}}</div>
@@ -9,9 +8,7 @@
             <button @click=modifyPost>modify</button>
             <button @click=deletePost>delete</button>
         </p>
-        <p v-else>
-            <button @click=showList>show</button>
-        </p>
+        <button @click=showList>show</button>
     </div>
 </template>
 
@@ -20,7 +17,6 @@ import {Vue} from 'vue-class-component';
 import{ Prop} from 'vue-property-decorator';
 import axios from 'axios';
 
-// @Component
 export default class PostDetail extends Vue {
     title = '';
     content = '';
@@ -40,12 +36,11 @@ export default class PostDetail extends Vue {
             if(this.username === this.writer){
                 this.isWriter = true;
             }
-            console.log(res.data.memo);
         })
     }
 
     modifyPost(){
-        // this.$router.push({name: 'UpdatePostForm', params: {id: this.id}})
+        this.$router.push({name: 'UpdatePostForm',  params: {id: this.id || ''}})
     }
 
     deletePost(){

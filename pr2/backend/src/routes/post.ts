@@ -56,17 +56,18 @@ router.get('/:id', async (req: Request, res: Response) => {
 // 글 수정
 router.put('/:id', async (req: Request, res: Response) => {
     try {
-        await postCollection.findOne({ _id: req.params.id }, (err, result) => {
-        //    if (result._writer === req.session._user?.username) {
-                postCollection.updateOne(
-                    {
-                        _id: req.params.id
-                    },
-                    {
+        await postCollection.findOne(new ObjectId(req.params.id), (err, result) => {
+            console.log(result);
+            const updatedDocument = {
+                $set: {
                         title: req.body.title,
                         content: req.body.content,
                         updatedAt: new Date
-                    }, (err, data) => {
+                    }
+            }
+        //    if (result._writer === req.session._user?.username) {
+                postCollection.updateOne(
+                    {title: result.title, createdAt: result.createdAt},updatedDocument, (err, data) => {
                         return err? res.json({message:err.message}) :res.json({ memo: data });
                     });
                 

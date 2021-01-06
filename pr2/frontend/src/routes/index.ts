@@ -24,8 +24,9 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../components/PostForm.vue')
     },
     {
-        path: '/posts/:id',
+        path: '/posts/update/:id',
         name: 'UpdatePostForm',
+        props: true,
         component: () => import('../components/PostForm.vue')
     }
 ]

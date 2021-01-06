@@ -1,9 +1,8 @@
 <template>
     <div class="post-container">
-        <h2>MEMOS</h2>
+        <h1>MEMOS</h1>
         <ul>
             <li v-for="(memo, id) in memoList" :key="id">
-                <h1>{{memo._id}}</h1>
                 <h4><router-link :to="{name:'PostDetail', params:{id:memo._id}}">{{memo.title}}</router-link></h4>
             </li>
         </ul>

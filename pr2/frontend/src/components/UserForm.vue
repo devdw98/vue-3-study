@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h1>JOIN AND LOGIN</h1>
         <form @submit.stop.prevent="onSubmit">
             <div>
                 <label for="username">username</label>
@@ -16,7 +17,7 @@
 </template>
 
 <script lang="ts">
-// import Vue from 'vue'
+
 import {Vue} from 'vue-class-component'
 import axios from 'axios'
 import router from '../routes';
@@ -30,13 +31,6 @@ export default class Home extends Vue {
         if(this.username === '' || this.password === ''){
                 alert('Please fill in all the blanks.')
         }else{
-            // console.log(`${this.username} ${this.password}`);
-            // this.$http.post('/api/users/register', userInfo)
-            // .then(res =>{
-            //     if(res.data.sucess === true){
-            //         alert('join success!');
-            //     }    
-            // })
             const user = {
                 username: this.username,
                 password: this.password
@@ -57,12 +51,10 @@ export default class Home extends Vue {
                 username: this.username,
                 password: this.password
             }
-        //    console.log(`${this.username} ${this.password}`);
-            axios.post('http://localhost:3000/api/users/login', user)//, {withCredentials: true})
+            axios.post('http://localhost:3000/api/users/login', user)
             .then(res =>{
-                // console.log(res);
                 localStorage.setItem('username', res.data.name);
-                // return res.status===200 ? this.$router.push('/posts'):alert(res.data.message);
+                return res.data.name !== undefined ? this.$router.push('/posts'):alert(res.data.message);
             });
         }
     }
