@@ -1,7 +1,7 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <!-- <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/> -->
-  <Calculator/>
+	<img alt="Vue logo" src="./assets/logo.png" />
+	<!-- <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/> -->
+	<Calculator />
 </template>
 
 <script lang="ts">
@@ -10,21 +10,21 @@ import HelloWorld from './components/HelloWorld.vue';
 import Calculator from './components/Calculator.vue';
 
 export default defineComponent({
-  name: 'App',
-  components: {
-    HelloWorld,
-    Calculator
-  }
+	name: 'App',
+	components: {
+		HelloWorld,
+		Calculator,
+	},
 });
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+	font-family: Avenir, Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-align: center;
+	color: #2c3e50;
+	margin-top: 60px;
 }
 </style>

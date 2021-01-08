@@ -1,152 +1,185 @@
 <template>
-<div class="main">
-    <h1>Calculator</h1>
-    <number @number-initialize="setNum"></number>
-    <button type="button" @click="setFloat">.</button>
-    <symbols @symbol-initialize="setSymbol"></symbols>
-    <modes @modes-initialize="setMode"></modes>
-    <memory @memory-initialize="setMode"></memory>
-    <h3>{{ objStr }}</h3>
-    <!-- <h5 v-for="(obj, id) in objList" :key="id">{{obj}} </h5> -->
+	<div class="main">
+		<h1>Calculator</h1>
+		<div class="number-btn">
+			<button type="button" @click="setNum(1)">1</button>
+			<button type="button" @click="setNum(2)">2</button>
+			<button type="button" @click="setNum(3)">3</button>
+			<button type="button" @click="setNum(4)">4</button>
+			<button type="button" @click="setNum(5)">5</button>
+			<button type="button" @click="setNum(6)">6</button>
+			<button type="button" @click="setNum(7)">7</button>
+			<button type="button" @click="setNum(8)">8</button>
+			<button type="button" @click="setNum(9)">9</button>
+			<button type="button" @click="setNum(0)">0</button>
+			<button type="button" @click="setFloat">.</button>
+		</div>
+		<div class="symbol-btn">
+			<button type="button" @click="setSymbol('+')">+</button>
+			<button type="button" @click="setSymbol('-')">-</button>
+			<button type="button" @click="setSymbol('*')">*</button>
+			<button type="button" @click="setSymbol('/')">/</button>
+			<button type="button" @click="setSymbol('=')">=</button>
+		</div>
+		<div class="mode-btn">
+			<button type="button" @click="setMode('C')">C</button>
+			<button type="button" @click="setMode('AC')">AC</button>
+			<button type="button" @click="setMode('GT')">GT</button>
+			<button type="button" @click="setMode('MC')">MC</button>
+			<button type="button" @click="setMode('MR')">MR</button>
+			<button type="button" @click="setMode('M+')">M+</button>
+			<button type="button" @click="setMode('M-')">M-</button>
+		</div>
+		{{ num }}
+		<hr />
+		{{ history }} =
 
-    <h1>{{resNum}}</h1>
-</div>
+		<strong>{{ resultNum }}</strong>
+	</div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
-import Number from './Number.vue';
-import Symbols from './Symbols.vue';
-import Modes from './Mode.vue';
-import Memory from './Memory.vue';
+import { defineComponent } from 'vue';
 
-type Operator = '+' | '-' | '*' | '/';
+type Operator = '+' | '-' | '*' | '/' | '';
 type Mode = 'C' | 'AC' | 'GT' | 'MC' | 'MR' | 'M+' | 'M-';
 
-const calculateFunc: Record<Operator, (num1: number, num2: number)=> number> = {
-    '+': (num1, num2) => num1 + num2,
-    '-': (num1, num2) => num1 - num2,
-    '*': (num1, num2) => num1 * num2,
-    '/': (num1, num2) => num1 / num2
+const calculateFunc: Record<
+	Operator,
+	(num1: number, num2: number) => number
+> = {
+	'+': (num1, num2) => num1 + num2,
+	'-': (num1, num2) => num1 - num2,
+	'*': (num1, num2) => num1 * num2,
+	'/': (num1, num2) => num1 / num2,
+	'': (num1, num2) => 0,
 };
 
 export default defineComponent({
-    name: 'Calculator',
-    components: {
-        Number,
-        Symbols,
-        Modes,
-        Memory
-    },
+	name: 'Calculator',
 
-    data(){
-        return {
-            isDot: false,
-            decimalCnt: 0,
-            num: 0,
-            resNum: 0,
-            memNum: 0,
-            preSym:'' as Operator,
-            numList: [] as number[],
-            resList: [] as number[],
-            objList: [] as any[],
-            objStr: '' as string
-        }
-    },
-    
-    methods: {
-        setNum(inputNum: number){
-            if(this.isDot){
-                this.decimalCnt++;
-                let i = 0;
-                while(i < this.decimalCnt){
-                    inputNum /= 10;
-                    i++;
-                }
-                this.num = this.num + inputNum
-            } else{
-                this.num = this.num * 10 + inputNum;
-            }
-        },
-        
-        setFloat(){
-            this.isDot = true;
-        },
+	data() {
+		return {
+			isDot: false,
+			decimalCount: 0,
+			num: 0,
+			resultNum: 0,
+			memoryNum: 0,
+			preSymbol: '' as Operator,
+			numList: [] as number[],
+			resultList: [] as number[],
+			history: '',
+		};
+	},
 
-        setSymbol(symbol: Operator){
-            if(this.num != 0){
-                this.numList.push(this.num);
-                this.objStr = this.objStr.concat(' ', this.num.toString());
-                this.num = 0;
-                this.isDot = false;
-            }
-            const len = this.numList.length;
-            if(symbol.localeCompare('=')){ //=이 아니면
-                this.objStr = this.objStr.concat(' ', symbol);
-                this.resNum = this.resNum != 0? calculateFunc[this.preSym](this.resNum, this.numList[len-1]) : this.numList[len-1];
-                this.preSym = symbol;
-            }else{
-                this.objStr = this.objStr.concat(' ',this.preSym);
-                this.objStr = this.objStr.concat(' ',)
-                this.resNum = this.resNum != 0? calculateFunc[this.preSym](this.resNum, this.numList[len-1]) : this.numList[len-1];
-                this.resList.push(this.resNum);
-            }
-        },
-        setMode(mode: Mode){
-            switch(mode){
-                case 'C':
-                    this.modeC();
-                    break;
-                case 'AC':
-                    this.modeAC();
-                    break;
-                case 'GT':
-                    this.modeGT();
-                    break;
-                case 'MC':
-                    this.modeMC();
-                    break;
-                case 'MR':
-                    this.modeMR();
-                    break;
-                case 'M+':  
-                    this.modeMP(this.num != 0? this.num : this.resNum);
-                    break;
-                case 'M-':
-                    this.modeMM(this.num != 0? this.num : this.resNum);
-                    break;
-            }
-        },
+	methods: {
+		setNum(inputNum: number) {
+			if (this.isDot) {
+				this.decimalCount++;
+				let i = 0;
+				while (i < this.decimalCount) {
+					inputNum /= 10;
+					i++;
+				}
+				this.num = this.num + inputNum;
+			} else {
+				this.num = this.num * 10 + inputNum;
+			}
+		},
 
-        modeC(){
-            this.num = 0;
-            this.resNum = 0;
-            this.isDot = false;
-            this.objStr = '';
-        },
-        modeAC(){
-            this.numList = [];
-            this.resList = [];
-            this.modeC();
-        },
-        modeGT(){
-            this.resNum = 0;
-            for(let n of this.resList){
-                this.resNum += n;
-            }
-        },
-        modeMC(){
-            this.memNum = 0;
-        },
-        modeMR(){
-            this.resNum = this.memNum;
-        },
-        modeMP(curNum: number){
-            this.memNum += curNum;
-        },
-        modeMM(curNum: number){
-            this.memNum -= curNum;
-        }
-    },
-})
+		setFloat() {
+			this.isDot = true;
+		},
+
+		setSymbol(symbol: Operator) {
+			if (this.num !== 0) {
+				this.numList.push(this.num);
+				this.history = this.history.concat(' ', this.num.toString());
+				this.num = 0;
+				this.isDot = false;
+			}
+			const len = this.numList.length;
+			if (symbol.localeCompare('=')) {
+				//=이 아니면
+				// this.history = this.history.concat(
+				// 	' ',
+				// 	this.numList[len - 1].toString()
+				// );
+				this.history = this.history.concat(' ', symbol);
+				this.resultNum =
+					this.resultNum !== 0
+						? calculateFunc[this.preSymbol](
+								this.resultNum,
+								this.numList[len - 1]
+						  )
+						: this.numList[len - 1];
+				this.preSymbol = symbol;
+			} else {
+				this.resultNum =
+					this.resultNum !== 0
+						? calculateFunc[this.preSymbol](
+								this.resultNum,
+								this.numList[len - 1]
+						  )
+						: this.numList[len - 1];
+				this.resultList.push(this.resultNum);
+			}
+		},
+		setMode(mode: Mode) {
+			switch (mode) {
+				case 'C':
+					this.modeC();
+					break;
+				case 'AC':
+					this.modeAC();
+					break;
+				case 'GT':
+					this.modeGT();
+					break;
+				case 'MC':
+					this.modeMC();
+					break;
+				case 'MR':
+					this.modeMR();
+					break;
+				case 'M+':
+					this.modeMP(this.num !== 0 ? this.num : this.resultNum);
+					break;
+				case 'M-':
+					this.modeMM(this.num !== 0 ? this.num : this.resultNum);
+					break;
+			}
+		},
+
+		modeC() {
+			this.num = 0;
+			this.resultNum = 0;
+			this.isDot = false;
+			this.history = '';
+		},
+		modeAC() {
+			this.numList = [];
+			this.resultList = [];
+			this.modeC();
+		},
+		modeGT() {
+			this.resultNum = 0;
+			this.resultNum = this.resultList.reduce((total, n) => {
+				return total + n;
+			}, 0);
+		},
+		modeMC() {
+			this.memoryNum = 0;
+		},
+		modeMR() {
+			this.resultNum = this.memoryNum;
+		},
+		modeMP(curNum: number) {
+			this.memoryNum += curNum;
+		},
+		modeMM(curNum: number) {
+			this.memoryNum -= curNum;
+		},
+	},
+});
 </script>
